@@ -1,0 +1,53 @@
+*,
+*::before,
+*::after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.btn-zero {
+  background: white;
+  border: none;
+  padding: 0;
+}
+.btn-zero:active,
+.btn-zero:focus {
+  outline: 0;
+}
+
+.ml-10 {
+  margin-left: 10px;
+}
+
+.mt-15 {
+  margin-top: 15px;
+}
+
+.pl-0 {
+  padding-left: 0;
+}
+
+.p-10 {
+  padding: 10px;
+}
+
+#root {
+  min-width: 320px;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+/* ============================== @media query ============================== */
+
+@media only screen and (max-width: 992px) {
+  .btn-group {
+    padding-right: 0;
+  }
+
+  .input-group[class*='col-'] {
+    margin-top: 15px;
+  }
+}
