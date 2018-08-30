@@ -3,6 +3,9 @@ import NoTaskItem from './noTaskItem';
 import TaskItem from './taskItem';
 
 /* @prop: {
+    + searchTxt: (String),
+    + showByStatus: (Number),
+    + sortOrder: (Boolean),
     + tasks: (Array),
     + onCloseTaskFrm: (f),
     + onDeleteTask: (f),
@@ -28,10 +31,42 @@ class TaskTable extends Component {
     this.props.onToggleTaskStatus(taskId);
   };
 
+  tasksFilter = (filters, tasks) =>
+    tasks
+      // filter by searchTxt
+      .filter(
+        task =>
+          filters.searchTxt.length === 0 ||
+          task.name.indexOf(filters.searchTxt) > -1
+      )
+      // filter by showByStatus
+      .filter(
+        task =>
+          filters.showByStatus === -1 || task.status === filters.showByStatus
+      )
+      // sort by sortOrder
+      .sort((_1, _2) => {
+        const _1_name = _1.name.toLowerCase(),
+          _2_name = _2.name.toLowerCase();
+        return filters.sortOrder
+          ? _1_name > _2_name
+            ? 1
+            : -1
+          : _1_name < _2_name
+            ? 1
+            : -1;
+      });
+
   render() {
+    const { tasks } = this.props;
+    const filters = {
+      searchTxt: this.props.searchTxt,
+      showByStatus: this.props.showByStatus,
+      sortOrder: this.props.sortOrder
+    };
     const taskItems =
       this.props.tasks.length > 0 ? (
-        this.props.tasks.map((task, index) => (
+        this.tasksFilter(filters, [...tasks]).map((task, index) => (
           <TaskItem
             key={task.id}
             index={index + 1}

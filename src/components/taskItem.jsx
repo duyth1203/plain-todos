@@ -42,7 +42,7 @@ class TaskItem extends Component {
             {this.props.task.status === 1 ? (
               <span className="label label-success">ACTIVE</span>
             ) : (
-              <span className="label label-danger">INACTIVE</span>
+              <span className="label label-default">INACTIVE</span>
             )}
           </button>
         </td>

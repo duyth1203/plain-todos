@@ -6,6 +6,17 @@
   box-sizing: border-box;
 }
 
+.btn-addon-right {
+  border-top-right-radius: 4px !important;
+  border-bottom-right-radius: 4px !important;
+}
+
+.btn-filter {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  width: calc(100% - 39px);
+}
+
 .btn-zero {
   background: white;
   border: none;

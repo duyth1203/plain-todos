@@ -14,14 +14,11 @@ class App extends Component {
         status: 1
       },
       formDisplayed: false,
+      searchTxt: '',
       showByStatus: -1, // -1: all, 1: active, 0: inactive
       sortOrder: true, // true: sort -> asc, false -> sort: dsc
       tasks: []
     };
-  }
-
-  componentDidMount() {
-    this.handleShowTasks();
   }
 
   getLocalTasks = () =>
@@ -38,6 +35,10 @@ class App extends Component {
 
   idGenerator() {
     return `${this.s4()}-${this.s4()}-${this.s4()}-${this.s4()}-${this.s4()}-${this.s4()}`;
+  }
+
+  componentDidMount() {
+    this.setState({ tasks: this.getLocalTasks() });
   }
 
   handleCloseTaskFrm = () => {
@@ -75,51 +76,31 @@ class App extends Component {
     });
   };
 
+  handleResetFilters = () => {
+    this.setState({
+      searchTxt: '',
+      showByStatus: -1,
+      sortOrder: true
+    });
+  };
+
   handleSaveTask = task => {
     const tasks = this.getLocalTasks();
     tasks.push(task);
     localStorage.setItem('tasks', JSON.stringify(tasks));
-    this.handleShowTasks();
-  };
-
-  handleShowByStatus = showByStatus => {
-    this.setState({ showByStatus: showByStatus }, () => {
-      this.handleShowTasks();
-    });
-  };
-
-  handleShowTasks = searchTxt => {
-    let tasks = this.getLocalTasks();
-    const { showByStatus, sortOrder } = this.state;
-    // handle showing by status
-    showByStatus !== -1 &&
-      (tasks = tasks.filter(task => task.status === showByStatus));
-    // handle searching
-    searchTxt !== undefined &&
-      searchTxt.length > 0 &&
-      (tasks = tasks.filter(
-        task => task.name.toLowerCase().indexOf(searchTxt) !== -1
-      ));
-    // handle sorting
-    tasks.sort((_1, _2) => {
-      const _1_name = _1.name.toLowerCase(),
-        _2_name = _2.name.toLowerCase();
-      return sortOrder
-        ? _1_name > _2_name
-          ? 1
-          : -1
-        : _1_name < _2_name
-          ? 1
-          : -1;
-    });
-    // return results
     this.setState({ tasks: tasks });
   };
 
-  handleSortTask = sortOrder => {
-    this.setState({ sortOrder: sortOrder }, () => {
-      this.handleShowTasks();
-    });
+  handleSearchTasks = searchTxt => {
+    this.setState({ searchTxt: searchTxt });
+  };
+
+  handleShowTasksByStatus = showByStatus => {
+    this.setState({ showByStatus: showByStatus });
+  };
+
+  handleSortTasks = sortOrder => {
+    this.setState({ sortOrder: sortOrder });
   };
 
   handleSubmitTaskFrm = task => {
@@ -141,6 +122,7 @@ class App extends Component {
       tasks,
       formContent,
       formDisplayed,
+      searchTxt,
       showByStatus,
       sortOrder
     } = this.state;
@@ -172,12 +154,16 @@ class App extends Component {
             showByStatus={showByStatus}
             sortOrder={sortOrder}
             onOpenTaskFrm={this.handleOpenTaskFrm}
-            onSearchTask={this.handleShowTasks}
-            onShowByStatus={this.handleShowByStatus}
-            onSort={this.handleSortTask}
+            onResetFilters={this.handleResetFilters}
+            onSearchTasks={this.handleSearchTasks}
+            onShowTasksByStatus={this.handleShowTasksByStatus}
+            onSortTasks={this.handleSortTasks}
           />
           <TaskTable
             tasks={tasks}
+            searchTxt={searchTxt}
+            showByStatus={showByStatus}
+            sortOrder={sortOrder}
             onCloseTaskFrm={this.handleCloseTaskFrm}
             onDeleteTask={this.handleDeleteTask}
             onEditTask={this.handleOpenTaskFrm}

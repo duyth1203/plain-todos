@@ -4,9 +4,10 @@ import React, { Component } from 'react';
     + showByStatus: (Number),
     + sortOrder: (Boolean),
     + onOpenTaskFrm: (f),
-    + onSearchTask: (f),
-    + onShowByStatus: (f),
-    + onSort: (f)
+    + onResetFilters: (f)
+    + onSearchTasks: (f),
+    + onShowTasksByStatus: (f),
+    + onSortTasks: (f)
   }
 */
 
@@ -24,20 +25,26 @@ class Controller extends Component {
     this.props.onOpenTaskFrm();
   };
 
-  onSearchTask = () => {
+  onResetFilters = () => {
+    this.props.onResetFilters();
+  };
+
+  onSearchTasks = () => {
     const searchTxt = this.refTaskSearch.current.value.trim().toLowerCase();
-    searchTxt.length > 0 && this.props.onSearchTask(searchTxt);
+    searchTxt.length > 0 && this.props.onSearchTasks(searchTxt);
   };
 
-  onShowByStatus = showByStatus => {
-    this.props.onShowByStatus(showByStatus);
+  onShowTasksByStatus = showByStatus => {
+    this.props.onShowTasksByStatus(showByStatus);
   };
 
-  onSort = sortOrder => {
-    this.props.onSort(sortOrder);
+  onSortTasks = sortOrder => {
+    this.props.onSortTasks(sortOrder);
   };
 
   render() {
+    const { showByStatus, sortOrder } = this.props;
+
     return (
       <div>
         <div className="row col-md-4 col-lg-4">
@@ -57,7 +64,7 @@ class Controller extends Component {
           <div className="btn-group col-xs-6 col-sm-6 col-md-6 col-lg-6 pl-0">
             <button
               type="button"
-              className="btn btn-active dropdown-toggle w-100"
+              className="btn btn-active dropdown-toggle btn-filter"
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
@@ -66,9 +73,25 @@ class Controller extends Component {
               &nbsp;Sort&nbsp;
               <span className="caret" />
             </button>
+
+            {/* Reset button */}
+            <button
+              type="button"
+              className="btn btn-active btn-addon-right"
+              onClick={this.onResetFilters}
+            >
+              <span
+                className="glyphicon glyphicon-retweet"
+                aria-hidden="true"
+              />
+            </button>
+
             <ul className="dropdown-menu p-10">
               <li>
-                <button className="btn-zero" onClick={() => this.onSort(true)}>
+                <button
+                  className="btn-zero"
+                  onClick={() => this.onSortTasks(true)}
+                >
                   <span
                     className="glyphicon glyphicon-sort-by-alphabet"
                     aria-hidden="true"
@@ -81,16 +104,17 @@ class Controller extends Component {
                   &nbsp;Z&nbsp;
                   <span
                     className={
-                      this.props.sortOrder === true
-                        ? 'glyphicon glyphicon-ok'
-                        : 'hidden'
+                      sortOrder === true ? 'glyphicon glyphicon-ok' : 'hidden'
                     }
                     aria-hidden="true"
                   />
                 </button>
               </li>
               <li>
-                <button className="btn-zero" onClick={() => this.onSort(false)}>
+                <button
+                  className="btn-zero"
+                  onClick={() => this.onSortTasks(false)}
+                >
                   <span
                     className="glyphicon glyphicon-sort-by-alphabet-alt"
                     aria-hidden="true"
@@ -103,9 +127,7 @@ class Controller extends Component {
                   &nbsp;A&nbsp;
                   <span
                     className={
-                      this.props.sortOrder === false
-                        ? 'glyphicon glyphicon-ok'
-                        : 'hidden'
+                      sortOrder === false ? 'glyphicon glyphicon-ok' : 'hidden'
                     }
                     aria-hidden="true"
                   />
@@ -115,15 +137,13 @@ class Controller extends Component {
               <li>
                 <button
                   className="btn-zero"
-                  onClick={() => this.onShowByStatus(-1)}
+                  onClick={() => this.onShowTasksByStatus(-1)}
                 >
                   <span className="label label-primary">ALL</span>
                   &nbsp;&nbsp;
                   <span
                     className={
-                      +this.props.showByStatus === -1
-                        ? 'glyphicon glyphicon-ok'
-                        : 'hidden'
+                      +showByStatus === -1 ? 'glyphicon glyphicon-ok' : 'hidden'
                     }
                     aria-hidden="true"
                   />
@@ -132,15 +152,13 @@ class Controller extends Component {
               <li>
                 <button
                   className="btn-zero"
-                  onClick={() => this.onShowByStatus(1)}
+                  onClick={() => this.onShowTasksByStatus(1)}
                 >
                   <span className="label label-success">ACTIVE</span>
                   &nbsp;&nbsp;
                   <span
                     className={
-                      +this.props.showByStatus === 1
-                        ? 'glyphicon glyphicon-ok'
-                        : 'hidden'
+                      +showByStatus === 1 ? 'glyphicon glyphicon-ok' : 'hidden'
                     }
                     aria-hidden="true"
                   />
@@ -149,15 +167,13 @@ class Controller extends Component {
               <li>
                 <button
                   className="btn-zero"
-                  onClick={() => this.onShowByStatus(0)}
+                  onClick={() => this.onShowTasksByStatus(0)}
                 >
                   <span className="label label-default">INACTIVE</span>
                   &nbsp;&nbsp;
                   <span
                     className={
-                      +this.props.showByStatus === 0
-                        ? 'glyphicon glyphicon-ok'
-                        : 'hidden'
+                      +showByStatus === 0 ? 'glyphicon glyphicon-ok' : 'hidden'
                     }
                     aria-hidden="true"
                   />
@@ -175,11 +191,12 @@ class Controller extends Component {
             placeholder="Type in task name..."
             ref={this.refTaskSearch}
           />
+
           <span className="input-group-btn">
             <button
               type="button"
               className="btn btn-default"
-              onClick={this.onSearchTask}
+              onClick={this.onSearchTasks}
             >
               <span className="glyphicon glyphicon-search" aria-hidden="true" />
               &nbsp;Search
