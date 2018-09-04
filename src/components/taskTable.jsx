@@ -1,36 +1,17 @@
 import React, { Component } from 'react';
 import NoTaskItem from './noTaskItem';
 import TaskItem from './taskItem';
+import { connect } from 'react-redux';
 
 /* @prop: {
     + searchTxt: (String),
     + showByStatus: (Number),
     + sortOrder: (Boolean),
-    + tasks: (Array),
-    + onCloseTaskFrm: (f),
-    + onDeleteTask: (f),
-    + onEditTask: (f),
-    + onToggleTaskStatus: (f)
+    + tasks: (Array)
   }
 */
 
 class TaskTable extends Component {
-  onCloseTaskFrm = () => {
-    this.props.onCloseTaskFrm();
-  };
-
-  onDeleteTask = taskId => {
-    this.props.onDeleteTask(taskId);
-  };
-
-  onEditTask = task => {
-    this.props.onEditTask(task);
-  };
-
-  onToggleTaskStatus = taskId => {
-    this.props.onToggleTaskStatus(taskId);
-  };
-
   tasksFilter = (filters, tasks) =>
     tasks
       // filter by searchTxt
@@ -58,24 +39,11 @@ class TaskTable extends Component {
       });
 
   render() {
-    const { tasks } = this.props;
-    const filters = {
-      searchTxt: this.props.searchTxt,
-      showByStatus: this.props.showByStatus,
-      sortOrder: this.props.sortOrder
-    };
+    const { tasks, filters } = this.props;
     const taskItems =
-      this.props.tasks.length > 0 ? (
-        this.tasksFilter(filters, [...tasks]).map((task, index) => (
-          <TaskItem
-            key={task.id}
-            index={index + 1}
-            task={task}
-            onCloseTaskFrm={this.onCloseTaskFrm}
-            onDeleteTask={this.onDeleteTask}
-            onEditTask={this.onEditTask}
-            onToggleTaskStatus={this.onToggleTaskStatus}
-          />
+      tasks.length > 0 ? (
+        this.tasksFilter(filters, tasks).map((task, index) => (
+          <TaskItem key={task.id} index={index + 1} task={task} />
         ))
       ) : (
         <NoTaskItem />
@@ -99,4 +67,9 @@ class TaskTable extends Component {
   }
 }
 
-export default TaskTable;
+const mapStateToProps = state => ({
+  tasks: state.tasks,
+  filters: state.filters
+});
+
+export default connect(mapStateToProps)(TaskTable);

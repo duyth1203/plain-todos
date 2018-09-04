@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import * as actions from '../redux/actions';
 
 /* @props: {
-    + task: {
-      id: (String), // indicate if panel's title is 'Create task' or 'Update task'
-      name: (String),
-      status: (Number)
+    + taskForm: {
+      + formContent: {
+        id: (String), // indicate if panel's title is 'Create task' or 'Update task'
+        name: (String),
+        status: (Number)
+      },
+      + formDisplayed: (Boolean)
     },
-    + onCloseTaskFrm: (f),
+    + onCloseTaskForm: (f),
     + onDeleteTask: (f),
-    + onSubmitTaskFrm: (f)
+    + onSaveTask: (f)
   }
 */
 
@@ -19,30 +24,38 @@ class TaskForm extends Component {
     this.refTaskStatus = React.createRef();
   }
 
+  fillTaskForm = () => {
+    this.refTaskName.current.value = this.props.taskForm.formContent.name;
+    this.refTaskStatus.current.value = this.props.taskForm.formContent.status;
+  };
+
   componentDidMount() {
     this.refTaskName.current.focus();
-    this.refTaskName.current.value = this.props.task.name;
-    this.refTaskStatus.current.value = this.props.task.status;
+    this.fillTaskForm();
   }
 
-  onCloseTaskFrm = () => {
-    this.props.onCloseTaskFrm();
+  componentDidUpdate() {
+    this.fillTaskForm();
+  }
+
+  onCloseTaskForm = () => {
+    this.props.onCloseTaskForm();
   };
 
   onDeleteTask = () => {
-    this.props.onDeleteTask(this.props.task.id);
-    this.props.onCloseTaskFrm();
+    this.props.onDeleteTask(this.props.taskForm.formContent.id);
+    this.props.onCloseTaskForm();
   };
 
-  onSubmitTaskFrm = e => {
+  onSaveTask = e => {
     e.preventDefault();
     const task = {
-      id: this.props.task.id,
+      id: this.props.taskForm.formContent.id,
       name: this.refTaskName.current.value,
       status: +this.refTaskStatus.current.value
     };
-    this.props.onSubmitTaskFrm(task);
-    this.props.onCloseTaskFrm();
+    this.props.onSaveTask(task);
+    this.props.onCloseTaskForm();
   };
 
   render() {
@@ -51,17 +64,19 @@ class TaskForm extends Component {
       width: '100%'
     };
 
+    const { formContent } = this.props.taskForm;
+
     return (
       <div className="panel panel-primary">
         <div className="panel-heading">
           <h3 className="panel-title" style={{ display: 'inline-block' }}>
-            {this.props.task.id === undefined ? 'Create task' : 'Update task'}
+            {formContent.id === undefined ? 'Create task' : 'Update task'}
           </h3>
           <button
             type="button"
             className="close"
             data-dismiss="alert"
-            onClick={this.props.onCloseTaskFrm}
+            onClick={this.onCloseTaskForm}
           >
             <span aria-hidden="true">&times;</span>
           </button>
@@ -71,7 +86,7 @@ class TaskForm extends Component {
           id="taskForm"
           name="taskForm"
           className="panel-body"
-          onSubmit={this.onSubmitTaskFrm}
+          onSubmit={this.onSaveTask}
         >
           <label>Name</label>
           <input
@@ -103,7 +118,7 @@ class TaskForm extends Component {
             type="submit"
             className="btn btn-success"
             style={style}
-            onClick={this.onSubmitTaskFrm}
+            onClick={this.onSaveTask}
           >
             Submit
           </button>
@@ -121,4 +136,21 @@ class TaskForm extends Component {
   }
 }
 
-export default TaskForm;
+const mapStateToProps = state => ({ taskForm: state.taskForm });
+
+const mapDispatchToProps = dispatch => ({
+  onCloseTaskForm: () => {
+    dispatch(actions.closeTaskForm());
+  },
+  onDeleteTask: taskId => {
+    dispatch(actions.deleteTask(taskId));
+  },
+  onSaveTask: task => {
+    dispatch(actions.saveTask(task));
+  }
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TaskForm);

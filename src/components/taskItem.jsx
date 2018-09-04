@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import * as actions from '../redux/actions';
 
 /* @prrop: {
     + index: (Number),
@@ -7,9 +9,9 @@ import React, { Component } from 'react';
       name: (String),
       status: (Number)
     },
-    + onCloseTaskFrm: (f),
+    + onCloseTaskForm: (f),
     + onDeleteTask: (f),
-    + onEditTask: (f),
+    + onOpenTaskForm: (f),
     + onToggleTaskStatus: (f)
   }
 */
@@ -17,15 +19,18 @@ import React, { Component } from 'react';
 class TaskItem extends Component {
   onDeleteTask = () => {
     this.props.onDeleteTask(this.props.task.id);
-    this.props.onCloseTaskFrm();
   };
 
   onEditTask = () => {
-    this.props.onEditTask(this.props.task);
+    this.props.onOpenTaskForm(this.props.task);
   };
 
   onToggleTaskStatus = () => {
-    this.props.onToggleTaskStatus(this.props.task.id);
+    const { task } = this.props;
+    this.props.onToggleTaskStatus({
+      ...task,
+      status: Math.abs(+task.status - 1)
+    });
   };
 
   render() {
@@ -67,4 +72,22 @@ class TaskItem extends Component {
   }
 }
 
-export default TaskItem;
+const mapDispatchToProps = dispatch => ({
+  onCloseTaskForm: () => {
+    dispatch(actions.closeTaskForm());
+  },
+  onDeleteTask: taskId => {
+    dispatch(actions.deleteTask(taskId));
+  },
+  onOpenTaskForm: task => {
+    dispatch(actions.openTaskForm(task));
+  },
+  onToggleTaskStatus: task => {
+    dispatch(actions.saveTask(task));
+  }
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(TaskItem);

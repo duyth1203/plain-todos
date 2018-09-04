@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import * as actions from '../redux/actions';
 
 /* @prop: {
-    + showByStatus: (Number),
-    + sortOrder: (Boolean),
-    + onOpenTaskFrm: (f),
+    + filters: {
+      + searchTxt: (String),
+      + showByStatus: (Number),
+      + sortOrder: (Boolean)
+    },
+    + onOpenTaskForm: (f),
     + onResetFilters: (f)
     + onSearchTasks: (f),
     + onShowTasksByStatus: (f),
@@ -21,8 +26,8 @@ class Controller extends Component {
     this.refTaskSearch.current.focus();
   }
 
-  onOpenTaskFrm = () => {
-    this.props.onOpenTaskFrm();
+  onOpenTaskForm = () => {
+    this.props.onOpenTaskForm();
   };
 
   onResetFilters = () => {
@@ -43,7 +48,7 @@ class Controller extends Component {
   };
 
   render() {
-    const { showByStatus, sortOrder } = this.props;
+    const { showByStatus, sortOrder } = this.props.filters;
 
     return (
       <div>
@@ -53,7 +58,7 @@ class Controller extends Component {
             <button
               type="button"
               className="btn btn-primary w-100"
-              onClick={this.onOpenTaskFrm}
+              onClick={this.onOpenTaskForm}
             >
               <span className="glyphicon glyphicon-plus" aria-hidden="true" />
               &nbsp;New
@@ -208,4 +213,29 @@ class Controller extends Component {
   }
 }
 
-export default Controller;
+const mapStateToProps = state => ({
+  filters: state.filters
+});
+
+const mapDispatchToProps = dispatch => ({
+  onOpenTaskForm: () => {
+    dispatch(actions.openTaskForm());
+  },
+  onResetFilters: () => {
+    dispatch(actions.resetFilters());
+  },
+  onSearchTasks: searchTxt => {
+    dispatch(actions.searchTasks(searchTxt));
+  },
+  onShowTasksByStatus: showByStatus => {
+    dispatch(actions.showTaskByStaus(showByStatus));
+  },
+  onSortTasks: sortOrder => {
+    dispatch(actions.sortTask(sortOrder));
+  }
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Controller);
