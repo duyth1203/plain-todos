@@ -22,12 +22,11 @@ class App extends Component {
 
         <div
           className={
-            taskForm.formDisplayed
-              ? 'col-md-8 col-lg-8'
-              : 'col-md-12 col-lg-12'
+            taskForm.formDisplayed ? 'col-md-8 col-lg-8' : 'col-md-12 col-lg-12'
           }
         >
           <Controller />
+          <hr />
           <TaskTable />
         </div>
       </div>

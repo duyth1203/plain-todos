@@ -47,6 +47,14 @@
   min-width: 320px;
 }
 
+.tasks-filter-controller {
+  min-height: 2.5em;
+}
+
+.tasks-search-form {
+  padding: 0;
+}
+
 .w-100 {
   width: 100%;
 }
@@ -58,7 +66,7 @@
     padding-right: 0;
   }
 
-  .input-group[class*='col-'] {
+  .tasks-search-form {
     margin-top: 15px;
   }
 }

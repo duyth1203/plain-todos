@@ -1,10 +1,6 @@
 import uuid4 from 'uuid/v4';
 import * as actionTypes from '../constants/actionTypes';
-
-const getLocalTasks = () =>
-  localStorage && localStorage.getItem('tasks')
-    ? JSON.parse(localStorage.getItem('tasks'))
-    : [];
+import getLocalTasks from '../../helpers/getLocalTasks';
 
 const initialState = getLocalTasks();
 

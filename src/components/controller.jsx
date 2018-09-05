@@ -23,7 +23,11 @@ class Controller extends Component {
   }
 
   componentDidMount() {
-    this.refTaskSearch.current.focus();
+    this.refTaskSearch.focus();
+  }
+
+  componentDidUpdate() {
+    this.refTaskSearch.value = this.props.filters.searchTxt;
   }
 
   onOpenTaskForm = () => {
@@ -34,8 +38,9 @@ class Controller extends Component {
     this.props.onResetFilters();
   };
 
-  onSearchTasks = () => {
-    const searchTxt = this.refTaskSearch.current.value.trim().toLowerCase();
+  onSearchTasks = e => {
+    e.preventDefault();
+    const searchTxt = this.refTaskSearch.value.trim().toLowerCase();
     searchTxt.length > 0 && this.props.onSearchTasks(searchTxt);
   };
 
@@ -51,7 +56,7 @@ class Controller extends Component {
     const { showByStatus, sortOrder } = this.props.filters;
 
     return (
-      <div>
+      <div className="tasks-filter-controller">
         <div className="row col-md-4 col-lg-4">
           {/* New Task button */}
           <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 pl-0">
@@ -189,25 +194,34 @@ class Controller extends Component {
         </div>
 
         {/* Search field */}
-        <div className="col-md-8 col-lg-8 input-group">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Type in task name..."
-            ref={this.refTaskSearch}
-          />
 
-          <span className="input-group-btn">
-            <button
-              type="button"
-              className="btn btn-default"
-              onClick={this.onSearchTasks}
-            >
-              <span className="glyphicon glyphicon-search" aria-hidden="true" />
-              &nbsp;Search
-            </button>
-          </span>
-        </div>
+        <form
+          className="tasks-search-form col-md-8 col-lg-8"
+          onSubmit={this.onSearchTasks}
+        >
+          <div className="form-group">
+            <div className="input-group">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Type in task name..."
+                ref={input => {
+                  this.refTaskSearch = input;
+                }}
+              />
+
+              <span className="input-group-btn">
+                <button type="submit" className="btn btn-default">
+                  <span
+                    className="glyphicon glyphicon-search"
+                    aria-hidden="true"
+                  />
+                  &nbsp;Search
+                </button>
+              </span>
+            </div>
+          </div>
+        </form>
       </div>
     );
   }
