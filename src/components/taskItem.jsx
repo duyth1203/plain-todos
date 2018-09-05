@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../redux/actions';
+import swal from 'sweetalert';
 
 /* @prrop: {
     + index: (Number),
@@ -18,7 +19,15 @@ import * as actions from '../redux/actions';
 
 class TaskItem extends Component {
   onDeleteTask = () => {
-    this.props.onDeleteTask(this.props.task.id);
+    swal({
+      title: 'Are you sure?',
+      text: "Once deleted, you won't be able to recover this task!",
+      icon: 'warning',
+      buttons: true,
+      dangerMode: true
+    }).then(willDelete => {
+      willDelete && this.props.onDeleteTask(this.props.task.id);
+    });
   };
 
   onEditTask = () => {

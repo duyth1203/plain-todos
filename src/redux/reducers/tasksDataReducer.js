@@ -1,6 +1,10 @@
+import uuid4 from 'uuid/v4';
 import * as actionTypes from '../constants/actionTypes';
-import getLocalTasks from '../../helpers/getLocalTasks';
-import idGenerator from '../../helpers/idGenerator';
+
+const getLocalTasks = () =>
+  localStorage && localStorage.getItem('tasks')
+    ? JSON.parse(localStorage.getItem('tasks'))
+    : [];
 
 const initialState = getLocalTasks();
 
@@ -21,7 +25,7 @@ const tasksDataReducer = (state = initialState, action) => {
       tasks = getLocalTasks();
       const { task } = action;
       // generate new id if add new task
-      if (task.id === undefined) task.id = idGenerator();
+      if (task.id === undefined) task.id = uuid4();
       // delete task if exists
       else
         for (let i = 0; i < tasks.length; i++) {

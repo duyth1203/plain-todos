@@ -15,7 +15,7 @@ class App extends Component {
         <hr />
 
         {taskForm.formDisplayed && (
-          <div className={'col-xs-12 col-sm-12 col-md-4 col-lg-4'}>
+          <div className={'col-md-4 col-lg-4'}>
             <TaskForm />
           </div>
         )}
@@ -23,8 +23,8 @@ class App extends Component {
         <div
           className={
             taskForm.formDisplayed
-              ? 'col-xs-12 col-sm-12 col-md-8 col-lg-8'
-              : 'col-xs-12 col-sm-12 col-md-12 col-lg-12'
+              ? 'col-md-8 col-lg-8'
+              : 'col-md-12 col-lg-12'
           }
         >
           <Controller />

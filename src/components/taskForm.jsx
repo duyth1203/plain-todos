@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../redux/actions';
+import swal from 'sweetalert';
 
 /* @props: {
     + taskForm: {
@@ -43,8 +44,19 @@ class TaskForm extends Component {
   };
 
   onDeleteTask = () => {
-    this.props.onDeleteTask(this.props.taskForm.formContent.id);
-    this.props.onCloseTaskForm();
+    if (this.props.taskForm.formContent.id)
+      swal({
+        title: 'Are you sure?',
+        text: "Once deleted, you won't be able to recover this task!",
+        icon: 'warning',
+        buttons: true,
+        dangerMode: true
+      }).then(willDelete => {
+        if (willDelete) {
+          this.props.onDeleteTask(this.props.taskForm.formContent.id);
+          this.props.onCloseTaskForm();
+        }
+      });
   };
 
   onSaveTask = e => {
